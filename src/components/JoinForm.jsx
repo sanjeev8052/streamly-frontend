@@ -3,7 +3,7 @@ import toast from 'react-hot-toast';
 import confetti from 'canvas-confetti';
 import { User, AtSign, Lock, ArrowRight, CheckCircle2, XCircle, Loader2, Sparkles, ShieldCheck } from 'lucide-react';
 
-const API_BASE = 'http://localhost:5000/api';
+import { API_BASE } from '../config';
 
 export default function JoinForm({ onJoin, existingUsers = [] }) {
   const [mode, setMode] = useState('signup'); // 'signup' | 'login'

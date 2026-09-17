@@ -13,8 +13,7 @@ import BottomNav from './components/BottomNav';
 import IncomingCallModal from './components/IncomingCallModal';
 import OutgoingCallModal from './components/OutgoingCallModal';
 
-const API_BASE = 'http://localhost:5000/api';
-const SOCKET_URL = 'http://localhost:5000';
+import { API_BASE, SOCKET_URL } from './config';
 
 export default function App() {
   const [currentUser, setCurrentUser] = useState(() => {

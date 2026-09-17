@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 import { User, AtSign, Shield, Smartphone, Bell, LogOut, CheckCircle, Save, Camera, Lock } from 'lucide-react';
 
-const API_BASE = 'http://localhost:5000/api';
+import { API_BASE } from '../config';
 
 export default function SettingsView({ currentUser, onUpdateUser, onSwitchUser }) {
   const [fullName, setFullName] = useState(currentUser?.fullName || '');
