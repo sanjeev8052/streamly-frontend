@@ -81,11 +81,16 @@ export default function App() {
     });
 
     // Realtime Call Accepted by Receiver
-    newSocket.on('call-accepted', () => {
-      console.log('✅ Call accepted by remote user');
+    newSocket.on('call-accepted', ({ receiverSocketId }) => {
+      console.log('✅ Call accepted by remote user, socket:', receiverSocketId);
       setOutgoingCall(prev => {
         if (prev) {
-          setActiveCallContact({ contact: prev.contact, type: prev.callType });
+          setActiveCallContact({
+            contact: prev.contact,
+            type: prev.callType,
+            isCaller: true,
+            targetSocketId: receiverSocketId
+          });
         }
         return null;
       });
@@ -103,12 +108,22 @@ export default function App() {
       setIncomingCall(null);
     });
 
+    // Realtime Remote Ended Call
+    newSocket.on('call-ended', () => {
+      toast('Call ended by remote user', { icon: '📞' });
+      setActiveCallContact(null);
+    });
+
     // Target user offline notification
     newSocket.on('user-offline', () => {
-      toast.error('User is offline, but starting demo video feed');
+      toast('User is offline, entering call view with preview', { icon: 'ℹ️' });
       setOutgoingCall(prev => {
         if (prev) {
-          setActiveCallContact({ contact: prev.contact, type: prev.callType });
+          setActiveCallContact({
+            contact: prev.contact,
+            type: prev.callType,
+            isCaller: true
+          });
         }
         return null;
       });
@@ -232,7 +247,9 @@ export default function App() {
       });
       setActiveCallContact({
         contact: incomingCall.caller,
-        type: incomingCall.callType
+        type: incomingCall.callType,
+        isCaller: false,
+        targetSocketId: incomingCall.callerSocketId
       });
       setIncomingCall(null);
     }
@@ -312,6 +329,11 @@ export default function App() {
       ) : activeCallContact ? (
         <VideoCall
           contact={activeCallContact?.contact || contacts[0]}
+          socket={socket}
+          currentUser={currentUser}
+          isCaller={activeCallContact?.isCaller ?? true}
+          targetSocketId={activeCallContact?.targetSocketId}
+          callType={activeCallContact?.type || 'video'}
           onEndCall={handleEndCall}
         />
       ) : activeChatContact ? (
